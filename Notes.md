@@ -4,9 +4,10 @@
 - Thuật ngữ phổ biến là họ dùng thư viện **ORM**: (object-relational-mapping) 
 - Để dễ hiểu phần class PET nó sẽ convert và mapping với objects trong code và nó biểu diễn bảng SQL là pets. 
 - Khi bạn tạo một bảng giống như việc khai báo 1 class
-
 - **SQLAlchemy** là một thư viện ORM phổ biến nhất trong Python
+- Dùng Table Plus để check database
 
+## Các bước thực hiện
 - STEP 1: Connecting
     + Tạo 1 file tên database.py
     + Tạo 1 file database tên blog.db
@@ -39,8 +40,38 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # Create a base class for declarative class definitions
 Base = declarative_base()
 ```
+- STEP 3: File model dùng để tạo bảng
+    + Vào TablePlus tải về trên máy
+    + Create a new connection 
+    + Chọn SQLite
+    + Đặt tên tuy chọn 
+    + Sau đó select cái path database đã tạo có trong project. Như mình đã tạo là blog.db
+    + Nhấn Connect
 
-- Tạo 1 file tên models.py
+- Tạo 1 file tên models.py để tạo table
+
+>models.py
+
+```
+from .database import Base
+from sqlalchemy import Column, Integer, String, Boolean
+
+# Define the Blog model, every model should inherit from Base
+class Blog(Base):
+    __tablename__ = 'blogs' # Tên bảng trong database
+    id = Column(Integer, primary_key=True, index=True)
+    title = Column(String)
+    body = Column(String)
+```
+- Sau đó vô main bỏ thêm dòng này vào 
+```
+from. import schemas, models
+from database import engine
+# Create the database tables
+models.Base.metadata.create_all(engine)
+```
+- Rồi sau đó vào TablePlus check xem có bảng hay chưa. 
+- STEP 4: File schemas.py để validate data
 - Tạo 1 file tên schemas.py
 - Trong file models.py chúng ta khai báo các bảng trong database
 - Trong file schemas.py chúng ta khai báo các class để validate

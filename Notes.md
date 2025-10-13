@@ -12,7 +12,9 @@
     + Tạo 1 file tên database.py
     + Tạo 1 file database tên blog.db
 - Sau đó chúng ta bắt đầu set up kết nối 
-
+- Cách Run Server
+```
+uvicorn app:main --reload
 >database.py
 
 ```
@@ -74,4 +76,4 @@ models.Base.metadata.create_all(engine)
 - STEP 4: File schemas.py để validate data
 - Tạo 1 file tên schemas.py
 - Trong file models.py chúng ta khai báo các bảng trong database
-- Trong file schemas.py chúng ta khai báo các class để validate
+- Trong file schemas.py chúng ta khai báo các class để validate 

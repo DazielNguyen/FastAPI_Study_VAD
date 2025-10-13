@@ -3,6 +3,8 @@ from fastapi import FastAPI, Depends, status, Response, HTTPException
 from . import schemas, models
 from .database import engine, SessionLocal
 from sqlalchemy.orm import Session
+from pwdlib import PasswordHash
+
 app = FastAPI()
 
 # Create the database tables
@@ -59,11 +61,20 @@ def show(id, response: Response, db: Session = Depends(get_db)):
         # return  {"detail": f"Blog with the id {id} is not available"}
     return blog
 
+password_hash = PasswordHash.recommended()
 
-@app.post("/user")
+@app.post("/user", response_model=schemas.User, status_code=status.HTTP_201_CREATED)
 def create_user(request: schemas.User, db: Session = Depends(get_db)):
-    new_user = models.User(name = request.name, email=request.email, password=request.password)
+    hashed_password = password_hash.hash(request.password)
+    new_user = models.User(name = request.name, email=request.email, password=hashed_password)
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
     return new_user
+
+@app.get("/user/{id}", response_model=schemas.ShowUser, status_code=200)
+def get_user(id, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.id == id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail=f"User with the id {id} is not available")
+    return user

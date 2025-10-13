@@ -2,3 +2,5 @@ uvicorn
 fastapi
 sqlalchemy
 pydantic
+passlib[argon2]
+pwdlib[argon2]
